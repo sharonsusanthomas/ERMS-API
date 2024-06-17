@@ -139,6 +139,47 @@ app.get('/hod-users', (req, res) => {
     res.json(results);
   });
 });
+// Fetch departments
+app.get('/departments', (req, res) => {
+  const query = 'SELECT * FROM Department';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching departments:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+    res.json(results);
+  });
+});
+
+// Fetch users
+app.get('/users', (req, res) => {
+  const query = 'SELECT * FROM User';
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching users:', err);
+      return res.status(500).json({ success: false, message: 'Database error' });
+    }
+    res.json(results);
+  });
+});
+
+// Ensure this route is added in your server file (e.g., server.js or app.js)
+app.post('/add-to-department', (req, res) => {
+  const { user_id, dept_id } = req.body;
+  console.log('Received request to add user to department:', req.body); // Debugging line
+
+  const query = 'INSERT INTO user_department (user_id, dept_id) VALUES (?, ?)';
+
+  db.query(query, [user_id, dept_id], (err, result) => {
+    if (err) {
+      console.error('Error adding user to department:', err);
+      return res.status(500).json({ success: false, message: 'Error adding user to department', error: err.message });
+    }
+    res.status(200).json({ success: true, message: 'User added to department successfully', data: result });
+  });
+});
+
+
 
 
 app.listen(PORT, () => {
